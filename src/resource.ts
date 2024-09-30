@@ -79,8 +79,17 @@ export class Resource implements ICacheable {
                         included_relationships &&
                         included_relationships.indexOf(relation_alias) !== -1
                     ) {
-                        included_ids.push(temporal_id);
-                        included.push(resource.toObject({}).data);
+                        const {
+                            data: data,
+                            included: included_resources
+                        }: { data: IDataResource; included?: Array<any> } = resource.toObject(params);
+
+                        included_ids = [
+                            ...included_ids,
+                            temporal_id,
+                            ...(included_resources || []).map((result: IDataResource) => `${result.type}_${result.id}`)
+                        ];
+                        included = [...included, data, ...(included_resources || [])];
                     }
                 }
             } else {
@@ -120,8 +129,17 @@ export class Resource implements ICacheable {
                     included_relationships &&
                     included_relationships.indexOf(relation_alias) !== -1
                 ) {
-                    included_ids.push(temporal_id);
-                    included.push(relationship_data.toObject({}).data);
+                    const {
+                        data: data,
+                        included: included_resources
+                    }: { data: IDataResource; included?: Array<any> } = relationship_data.toObject(params);
+
+                    included_ids = [
+                        ...included_ids,
+                        temporal_id,
+                        ...(included_resources || []).map((result: IDataResource) => `${result.type}_${result.id}`)
+                    ];
+                    included = [...included, data, ...(included_resources || [])];
                 }
             }
         }
