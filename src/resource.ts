@@ -213,12 +213,15 @@ export class Resource implements ICacheable {
             this.cache_last_update = data_object.data.cache_last_update;
         }
 
-        new ResourceRelationshipsConverter(
-            Converter.getService,
-            data_object.data.relationships || {},
-            this.relationships,
-            Converter.buildIncluded(data_object)
-        ).buildRelationships();
+        for (let i = 0; i < 2; i++) {
+            // do this twice so we already know all resources
+            new ResourceRelationshipsConverter(
+                Converter.getService,
+                data_object.data.relationships || {},
+                this.relationships,
+                Converter.buildIncluded(data_object)
+            ).buildRelationships();
+        }
 
         return true;
     }
